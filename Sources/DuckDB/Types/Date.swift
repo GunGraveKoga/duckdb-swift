@@ -22,7 +22,11 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 
+#if compiler(>=5.10)
+internal import Cduckdb
+#else
 @_implementationOnly import Cduckdb
+#endif
 
 /// A date in the Gregorian calendar
 ///

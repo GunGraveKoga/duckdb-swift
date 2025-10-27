@@ -22,7 +22,11 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 
+#if compiler(>=5.10)
+internal import Cduckdb
+#else
 @_implementationOnly import Cduckdb
+#endif
 
 /// The underlying database type of a DuckDB column
 ///
@@ -37,10 +41,17 @@
 /// define database types as arbitrary structs (`ROW(i INTEGER, j VARCHAR)`),
 /// which can be cast to their `Decodable` matching Swift type in the same way.
 public struct DatabaseType: RawRepresentable, Hashable, Equatable {
+  #if os(Windows)
+  public let rawValue: Int32
+  public init(rawValue: Int32) {
+    self.rawValue = rawValue
+  }
+  #else
   public let rawValue: UInt32
   public init(rawValue: UInt32) {
     self.rawValue = rawValue
   }
+  #endif
 }
 
 // MARK: - Public Types

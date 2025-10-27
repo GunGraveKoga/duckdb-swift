@@ -23,6 +23,9 @@
 //  IN THE SOFTWARE.
 
 import Foundation
+#if canImport(FoundationEssentials)
+@_spi(SwiftCorelibsFoundation) import FoundationEssentials
+#endif
 
 public extension Decimal {
   
@@ -71,3 +74,31 @@ public extension Decimal {
     )
   }
 }
+
+#if canImport(FoundationEssentials)
+extension Decimal {
+
+  private struct UnsafeDecimal {
+    struct Storage {
+      var exponent: Int8
+      var lengthFlagsAndReserved: UInt8
+      var reserved: UInt16
+      var mantissa: Mantissa
+    }
+
+    var storage: Storage
+  }
+
+  private var storage: UnsafeDecimal.Storage {
+    unsafeBitCast(self, to: UnsafeDecimal.self).storage
+  }
+
+  internal var __length: UInt32 {
+    return UInt32(self.storage.lengthFlagsAndReserved >> 4)
+  }
+
+  internal var __mantissa: Mantissa {
+    return self.storage.mantissa
+  }
+}
+#endif
