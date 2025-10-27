@@ -282,13 +282,16 @@ extension duckdb_decimal {
 fileprivate extension Decimal {
   
   var hugeMantissa: UIntHuge {
-    let selfMantissa = __mantissa
+    #if canImport(FoundationEssentials)
+    let _mantissa = __mantissa
+    let _length = __length
+    #endif
     let components = [
-      selfMantissa.0, selfMantissa.1, selfMantissa.2, selfMantissa.3,
-      selfMantissa.4, selfMantissa.5, selfMantissa.6, selfMantissa.7
+      _mantissa.0, _mantissa.1, _mantissa.2, _mantissa.3,
+      _mantissa.4, _mantissa.5, _mantissa.6, _mantissa.7
     ]
     var mantissa = UIntHuge(0)
-    for i in 0..<Int(__length) {
+    for i in 0..<Int(_length) {
       mantissa += UIntHuge(components[i]) << (i * 16)
     }
     return mantissa
